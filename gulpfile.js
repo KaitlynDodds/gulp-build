@@ -7,6 +7,7 @@ const nano          = require('gulp-cssnano');
 const maps          = require('gulp-sourcemaps');
 const concat        = require('gulp-concat');
 const rename        = require('gulp-rename');
+const min           = require('gulp-imagemin');
 const del           = require('del');
 
 const options = {
@@ -52,8 +53,11 @@ gulp.task('minifyStyles', function() {
             .pipe(gulp.dest(options.dist + 'styles'))
 });
 
-gulp.task('styles', gulp.series('compileSass', 'minifyStyles'));
-gulp.task('scripts', gulp.series('concatScripts', 'minifyScripts'));
+gulp.task('images', function() {
+    return gulp.src(options.src + 'images/**/*.+(png|jpg)')
+            .pipe(min())
+            .pipe(gulp.dest(options.dist + 'content'));
+});
 
 gulp.task('clean', function() {
     return del([
@@ -62,4 +66,9 @@ gulp.task('clean', function() {
         options.src + 'css'
     ]);
 });
+
+gulp.task('styles', gulp.series('compileSass', 'minifyStyles'));
+gulp.task('scripts', gulp.series('concatScripts', 'minifyScripts'));
+
+
 
