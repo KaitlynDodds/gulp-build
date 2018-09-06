@@ -1,0 +1,9 @@
+# General
+.DS_Store
+.sass-cache
+
+# Dependencies
+node_modules/
+
+# Prod
+dist 
