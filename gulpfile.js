@@ -50,7 +50,7 @@ gulp.task('compileSass', function() {
             .pipe(browserSync.stream());
 });
 
-// minify and move images into dist
+// minify and move images into dist (content dir)
 gulp.task('images', function() {
     return gulp.src(options.src + 'images/**/*.+(png|jpg)')
             .pipe(min())
@@ -141,6 +141,13 @@ gulp.task('default', gulp.series(
 /* Build Prod Ready Dist Tasks
 *******************************/
 
+// minify and move images into dist (images dir)
+gulp.task('images:prod', function() {
+    return gulp.src(options.src + 'images/**/*.+(png|jpg)')
+            .pipe(min())
+            .pipe(gulp.dest(options.dist + 'images'));
+});
+
 gulp.task('html', function() {
     return gulp.src(options.src + '*.html')
             .pipe(useref())
@@ -150,7 +157,7 @@ gulp.task('html', function() {
 });
 
 gulp.task('all:prod', gulp.parallel(
-    'compileSass', 'concatScripts', 'images', 'icons'
+    'compileSass', 'concatScripts', 'images:prod', 'icons'
 ));
 
 gulp.task('build:prod', gulp.series(
