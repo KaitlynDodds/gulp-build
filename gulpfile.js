@@ -103,7 +103,7 @@ gulp.task('scripts', gulp.series(
 
 // watch sass files
 gulp.task('watch:styles', function() {
-    gulp.watch(options.src + 'sass/**/*.scss', gulp.series('compileSass'));
+    gulp.watch(options.src + 'sass/**/*', gulp.series('compileSass'));
 });
 
 // watch JS files
