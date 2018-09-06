@@ -70,6 +70,5 @@ $( document ).ready(function() {
   input.wrap(function() {
     return "<a class='button " + state + "'>" + text + "</div>";
   });
-
 });
 //# sourceMappingURL=global.js.map

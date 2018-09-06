@@ -16,6 +16,10 @@ const options = {
     dist: 'dist/'
 };
 
+/* General Tasks
+*****************/
+
+// start web server
 gulp.task('ws', function() {
     browserSync.init({
         server: {
@@ -24,14 +28,7 @@ gulp.task('ws', function() {
     });
 });
 
-gulp.task('html', function() {
-    return gulp.src(options.src + '*.html')
-            .pipe(useref())
-            .pipe(gulpif('*.js', uglify()))
-            .pipe(gulpif('*.css', nano()))
-            .pipe(gulp.dest(options.dist));
-});
-
+//concat all JS files
 gulp.task('concatScripts', function() {
     return gulp.src([
                 options.src + 'js/jquery-3.3.1.min.js', 
@@ -43,13 +40,7 @@ gulp.task('concatScripts', function() {
             .pipe(browserSync.stream());
 });
 
-gulp.task('minifyScripts', function() {
-    return gulp.src(options.src + 'js/global.js')
-            .pipe(uglify())
-            .pipe(rename('all.min.js'))
-            .pipe(gulp.dest(options.dist + 'scripts'))
-});
-
+// sass to css
 gulp.task('compileSass', function() {
     return gulp.src(options.src + 'sass/global.scss')
             .pipe(maps.init())
@@ -59,24 +50,20 @@ gulp.task('compileSass', function() {
             .pipe(browserSync.stream());
 });
 
-gulp.task('minifyStyles', function() {
-    return gulp.src(options.src + 'css/global.css')
-            .pipe(nano())
-            .pipe(rename('all.min.css'))
-            .pipe(gulp.dest(options.dist + 'styles'))
-});
-
+// minify and move images into dist
 gulp.task('images', function() {
     return gulp.src(options.src + 'images/**/*.+(png|jpg)')
             .pipe(min())
             .pipe(gulp.dest(options.dist + 'content'));
 });
 
+// move icons into dist
 gulp.task('icons', function() {
     return gulp.src(options.src + 'icons/**/*.+(svg|eot|ttf|woff)')
             .pipe(gulp.dest(options.dist + 'icons'));
 });
 
+// cleans all generated files
 gulp.task('clean', function() {
     return del([
         options.dist,
@@ -85,25 +72,23 @@ gulp.task('clean', function() {
     ]);
 });
 
-gulp.task('watch:styles', function() {
-    gulp.watch(options.src + 'sass/**/*.scss', gulp.series('compileSass'));
+
+/* Treehouse Project Tasks
+**************************/
+
+gulp.task('minifyScripts', function() {
+    return gulp.src(options.src + 'js/global.js')
+            .pipe(uglify())
+            .pipe(rename('all.min.js'))
+            .pipe(gulp.dest(options.dist + 'scripts'))
 });
 
-gulp.task('watch:scripts', function() {
-    gulp.watch(['!' + options.src + 'js/global.js*', options.src + 'js/**/*.js'], gulp.series('concatScripts'));
+gulp.task('minifyStyles', function() {
+    return gulp.src(options.src + 'css/global.css')
+            .pipe(nano())
+            .pipe(rename('all.min.css'))
+            .pipe(gulp.dest(options.dist + 'styles'))
 });
-
-gulp.task('watch:html', function() {
-    gulp.watch(options.src + '*.html').on('change', browserSync.reload);
-});
-
-gulp.task('watch:all', gulp.parallel(
-    'watch:styles', 'watch:html', 'watch:scripts'
-));
-
-gulp.task('watch', gulp.parallel(
-    'ws', 'watch:all'
-))
 
 gulp.task('styles', gulp.series(
     'compileSass', 'minifyStyles'
@@ -113,6 +98,32 @@ gulp.task('scripts', gulp.series(
     'concatScripts', 'minifyScripts'
 ));
 
+
+// Watch Tasks
+
+// watch sass files
+gulp.task('watch:styles', function() {
+    gulp.watch(options.src + 'sass/**/*.scss', gulp.series('compileSass'));
+});
+
+// watch JS files
+gulp.task('watch:scripts', function() {
+    gulp.watch(['!' + options.src + 'js/global.js*', options.src + 'js/**/*.js'], gulp.series('concatScripts'));
+});
+
+// watch html files
+gulp.task('watch:html', function() {
+    gulp.watch(options.src + '*.html').on('change', browserSync.reload);
+});
+
+// trigger web server and watch tasks
+gulp.task('watch', gulp.parallel(
+    'ws', 'watch:styles', 'watch:html', 'watch:scripts'
+));
+
+
+// Build Tasks
+
 gulp.task('all', gulp.parallel(
     'styles', 'scripts', 'images', 'icons'
 ));
@@ -121,7 +132,32 @@ gulp.task('build', gulp.series(
     'clean', 'all'
 ));
 
-gulp.task('default', gulp.series('build', 'watch'));
+gulp.task('default', gulp.series(
+    'build', 'watch'
+));
+
+
+
+/* Build Prod Ready Dist Tasks
+*******************************/
+
+gulp.task('html', function() {
+    return gulp.src(options.src + '*.html')
+            .pipe(useref())
+            .pipe(gulpif('*.js', uglify()))
+            .pipe(gulpif('*.css', nano()))
+            .pipe(gulp.dest(options.dist));
+});
+
+gulp.task('all:prod', gulp.parallel(
+    'compileSass', 'concatScripts', 'images', 'icons'
+));
+
+gulp.task('build:prod', gulp.series(
+    'clean', 'all:prod', 'html'
+));
+
+
 
 
 
