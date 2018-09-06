@@ -59,6 +59,11 @@ gulp.task('images', function() {
             .pipe(gulp.dest(options.dist + 'content'));
 });
 
+gulp.task('icons', function() {
+    return gulp.src(options.src + 'icons/**/*.+(svg|eot|ttf|woff)')
+            .pipe(gulp.dest(options.dist + 'icons'));
+});
+
 gulp.task('clean', function() {
     return del([
         options.dist,
@@ -76,7 +81,7 @@ gulp.task('scripts', gulp.series(
 ));
 
 gulp.task('all', gulp.parallel(
-    'styles', 'scripts', 'images'
+    'styles', 'scripts', 'images', 'icons'
 ));
 
 gulp.task('build', gulp.series(
