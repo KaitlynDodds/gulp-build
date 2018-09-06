@@ -1,3 +1,31 @@
+## Setup Instructions 
+
+Run `npm install` to install all dependencies.
+
+Uses `gulp 4.0.0`. Local and Global installation versions need to be the same.
+
+```
+npm -g gulp --version
+to check global version
+
+npm gulp --version
+to check local version
+```
+
+**Treehouse Project Tasks (meet requirements):**  
+
+* `gulp styles`
+* `gulp scripts`
+* `gulp clean`
+* `gulp images`
+* `gulp build`
+* `gulp` default
+
+**Build Prod Worthy Dist**
+
+* `gulp build:prod`
+
+
 # Gulp Build
 
 In this project you’ll be provided a website with HTML, SCSS, JPEGs, PNGs and JavaScript files. You’ll be required to set up a Gulp build process to prepare the website for deployment.

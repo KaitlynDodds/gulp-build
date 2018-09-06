@@ -148,7 +148,8 @@ gulp.task('images:prod', function() {
             .pipe(gulp.dest(options.dist + 'images'));
 });
 
-gulp.task('html', function() {
+// useref alters js/css file paths in html files
+gulp.task('html:prod', function() {
     return gulp.src(options.src + '*.html')
             .pipe(useref())
             .pipe(gulpif('*.js', uglify()))
@@ -161,7 +162,7 @@ gulp.task('all:prod', gulp.parallel(
 ));
 
 gulp.task('build:prod', gulp.series(
-    'clean', 'all:prod', 'html'
+    'clean', 'all:prod', 'html:prod'
 ));
 
 
