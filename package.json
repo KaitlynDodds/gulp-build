@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/KaitlynDodds/gulp-build#readme",
   "devDependencies": {
+    "browser-sync": "^2.24.7",
     "del": "^3.0.0",
     "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",

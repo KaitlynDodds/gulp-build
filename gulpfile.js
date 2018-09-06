@@ -9,11 +9,20 @@ const concat        = require('gulp-concat');
 const rename        = require('gulp-rename');
 const min           = require('gulp-imagemin');
 const del           = require('del');
+const browserSync   = require('browser-sync').create();
 
 const options = {
     src: 'src/',
     dist: 'dist/'
 };
+
+gulp.task('ws', function() {
+    browserSync.init({
+        server: {
+            baseDir: options.src
+        }
+    });
+});
 
 gulp.task('html', function() {
     return gulp.src(options.src + '*.html')
@@ -24,11 +33,14 @@ gulp.task('html', function() {
 });
 
 gulp.task('concatScripts', function() {
-    return gulp.src(options.src + 'js/**/*.js')
+    return gulp.src([
+                options.src + 'js/jquery-3.3.1.min.js', 
+                options.src + 'js/circle/*.js' ])
             .pipe(maps.init())
             .pipe(concat('global.js'))
             .pipe(maps.write('./'))
             .pipe(gulp.dest(options.src + 'js'))
+            .pipe(browserSync.stream());
 });
 
 gulp.task('minifyScripts', function() {
@@ -43,7 +55,8 @@ gulp.task('compileSass', function() {
             .pipe(maps.init())
             .pipe(sass())
             .pipe(maps.write('./'))
-            .pipe(gulp.dest(options.src + 'css'));
+            .pipe(gulp.dest(options.src + 'css'))
+            .pipe(browserSync.stream());
 });
 
 gulp.task('minifyStyles', function() {
@@ -72,6 +85,26 @@ gulp.task('clean', function() {
     ]);
 });
 
+gulp.task('watch:styles', function() {
+    gulp.watch(options.src + 'sass/**/*.scss', gulp.series('compileSass'));
+});
+
+gulp.task('watch:scripts', function() {
+    gulp.watch(['!' + options.src + 'js/global.js*', options.src + 'js/**/*.js'], gulp.series('concatScripts'));
+});
+
+gulp.task('watch:html', function() {
+    gulp.watch(options.src + '*.html').on('change', browserSync.reload);
+});
+
+gulp.task('watch:all', gulp.parallel(
+    'watch:styles', 'watch:html', 'watch:scripts'
+));
+
+gulp.task('watch', gulp.parallel(
+    'ws', 'watch:all'
+))
+
 gulp.task('styles', gulp.series(
     'compileSass', 'minifyStyles'
 ));
@@ -87,6 +120,8 @@ gulp.task('all', gulp.parallel(
 gulp.task('build', gulp.series(
     'clean', 'all'
 ));
+
+gulp.task('default', gulp.series('build', 'watch'));
 
 
 
