@@ -2,13 +2,13 @@
 
 Run `npm install` to install all dependencies.
 
-Uses `gulp 4.0.0`. Local and Global installation versions need to be the same.
+Uses `gulp 4.0.0`. Local and global installation versions need to be the same.
 
 ```
-npm -g gulp --version
+$ npm -g gulp --version
 to check global version
 
-npm gulp --version
+$ npm gulp --version
 to check local version
 ```
 
