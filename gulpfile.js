@@ -35,7 +35,7 @@ gulp.task('minifyScripts', function() {
     return gulp.src(options.src + 'js/global.js')
             .pipe(uglify())
             .pipe(rename('all.min.js'))
-            .pipe(gulp.dest(options.dist + 'styles'))
+            .pipe(gulp.dest(options.dist + 'scripts'))
 });
 
 gulp.task('compileSass', function() {
@@ -67,8 +67,21 @@ gulp.task('clean', function() {
     ]);
 });
 
-gulp.task('styles', gulp.series('compileSass', 'minifyStyles'));
-gulp.task('scripts', gulp.series('concatScripts', 'minifyScripts'));
+gulp.task('styles', gulp.series(
+    'compileSass', 'minifyStyles'
+));
+
+gulp.task('scripts', gulp.series(
+    'concatScripts', 'minifyScripts'
+));
+
+gulp.task('all', gulp.parallel(
+    'styles', 'scripts', 'images'
+));
+
+gulp.task('build', gulp.series(
+    'clean', 'all'
+));
 
 
 
